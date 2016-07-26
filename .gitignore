@@ -1,3 +1,5 @@
 node_modules
 env.sh
-
+dist/bundle.js
+dist/bundle.js.map
+secret.js

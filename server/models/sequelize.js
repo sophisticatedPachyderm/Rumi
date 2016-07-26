@@ -13,10 +13,7 @@ if (process.env.DATABASE_URL) {
   db = new Sequelize(process.env.DATABASE_URL);
 
 } else {
-  db = new Sequelize('rumi', 'rumi', '', {
-    host: 'localhost',
-    dialect: 'postgres',
-  });
+  db = new Sequelize('postgres://tqebzqljbxlyrh:_m6qstNbYBzqmGlcwjXkkFlvt0@ec2-54-163-239-12.compute-1.amazonaws.com:5432/d5gsf521cnq0ri', 'tqebzqljbxlyrh', '_m6qstNbYBzqmGlcwjXkkFlvt0');
 }
 
 module.exports = db;
