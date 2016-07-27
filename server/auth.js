@@ -34,43 +34,46 @@ passport.use(new LocalStrategy({
   });
 }));
 
-passport.use(new FacebookStrategy({
-  clientID: process.env.FB_ID,
-  clientSecret: process.env.FB_SECRET,
-  callbackURL: '/auth/facebook/return'
-}, function(accessToken, refreshToken, profile, done) {
-    // what if user exists in user table
-    // but first time logging in with fb?
-    // current logic would create a duplicate user in user table
-    OAuth.findOne({where: {
-      oauthId: profile.id,
-      oauthType: 'facebook'
-    }})
-    .then(oauth => {
-      if (!oauth) {
-        User.create({
-          name: profile.displayName,
-          email: 'na',   // ???
-          password: 'na' // ???
-        })
-        .then((user) => {
-          OAuth.create({
-            oauthId: profile.id,
-            oauthType: profile.provider,
-            userId: user.id
+// TODO : fix facebook login
+if (process.env.NODE_ENV === 'production') {
+  passport.use(new FacebookStrategy({
+    clientID: process.env.FB_ID,
+    clientSecret: process.env.FB_SECRET,
+    callbackURL: '/auth/facebook/return'
+  }, function(accessToken, refreshToken, profile, done) {
+      // what if user exists in user table
+      // but first time logging in with fb?
+      // current logic would create a duplicate user in user table
+      OAuth.findOne({where: {
+        oauthId: profile.id,
+        oauthType: 'facebook'
+      }})
+      .then(oauth => {
+        if (!oauth) {
+          User.create({
+            name: profile.displayName,
+            email: 'na',   // ???
+            password: 'na' // ???
+          })
+          .then((user) => {
+            OAuth.create({
+              oauthId: profile.id,
+              oauthType: profile.provider,
+              userId: user.id
+            });
+            done(null, user);
           });
-          done(null, user);
-        });
-      } else {
-        User.findOne({where: {
-          id: oauth.userId
-        }})
-        .then(user => {
-          done(null, user);
-        });
-      }
-    });
-}));
+        } else {
+          User.findOne({where: {
+            id: oauth.userId
+          }})
+          .then(user => {
+            done(null, user);
+          });
+        }
+      });
+  }));
+}
 
 let routes = express.Router();
 
