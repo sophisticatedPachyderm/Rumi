@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Task from './Task.jsx';
 import moment from 'moment';
+import urgency from '../urgency.service';
 
 let OverdueTasks = ({overdueTasks}) => (
   <ul>
@@ -11,7 +12,7 @@ let OverdueTasks = ({overdueTasks}) => (
           <Task
             id={overdueTask.id}
             name={overdueTask.name}
-            due={moment().endOf(overdueTask.dueBy).fromNow()}
+            dueBy={moment().endOf(overdueTask.dueBy).fromNow()}
             color={0}
             key={overdueTask.id}
           />
@@ -24,14 +25,13 @@ let OverdueTasks = ({overdueTasks}) => (
 OverdueTasks.propTypes = {
   overdueTasks: PropTypes.arrayOf(PropTypes.shape({
     name: PropTypes.string.isRequired,
-    due: PropTypes.string.isRequired,
+    dueBy: PropTypes.string.isRequired,
   }).isRequired).isRequired,
 };
 
 const mapStateToProps = function(state) {
-  //do something to filter just overdue tasks
   return {
-    overdueTasks: state.tasks
+    overdueTasks: urgency(state.tasks, 'overdue')
   };
 };
 

@@ -2,13 +2,13 @@ import socket from '../socketio.js';
 
 let nextCompletedId = 0;  //when we set initial state, we need to update this
 
-export const addCompleted = ({name, user, due}) => {
+export const addCompleted = ({id, name, user, createdAt}) => {
   return {
     type: 'ADD_COMPLETED',
-    id: nextCompletedId++,
+    id,
     name,
     user,
-    due
+    createdAt
   };
 };
 

@@ -1,7 +1,3 @@
-module.exports = {
-  prioritizeTasks
-};
-
 /**
  * @typedef PrioritizedTasks
  * @type {object}
@@ -15,21 +11,42 @@ module.exports = {
  * @param  {object[]} allTasks      An array of all tasks
  * @return {PrioritizedTasks}       An object grouping tasks by priority
  */
-function prioritizeTasks(allTasks) {
-  let tasks = { recent: [], urgent: [], overdue: [] };
-  let now = Date.now();
+const urgency = function(allTasks, priority) {
+  let tasks = {
+    recent: (tasks) => {
+      let now = Date.now();
+      return tasks.filter(t => {
+        let timeLeft = Date.parse(t.dueBy) - now;
+        if (timeLeft >= t.interval / 2) {
+          return t;
+        }
+      });
+    },
 
-  allTasks.forEach(t => {
-    let timeLeft = Date.parse(t.dueBy) - now;
+    urgent: (tasks) => {
+      let now = Date.now();
+      return tasks.filter(t => {
+        let timeLeft = Date.parse(t.dueBy) - now;
+        if (timeLeft >= 0 && timeLeft < t.interval / 2) {
+          return t;
+        }
+      });
+    }, 
 
-    if (timeLeft < 0) {
-      return tasks.overdue.push(t);
-    } else if (timeLeft < t.interval / 2) {
-      return tasks.urgent.push(t);
-    } else {
-      return tasks.recent.push(t);
-    }
-  });
+    overdue: (tasks) => {
+      let now = Date.now();
+      return tasks.filter(t => {
+        let timeLeft = Date.parse(t.dueBy) - now;
+        if (timeLeft < 0) {
+          return t;
+        }
+      });
+    } 
+  };
 
-  return tasks;
-}
+  if (tasks[priority]) {
+    return tasks[priority](allTasks);
+  } 
+};
+
+export default urgency;

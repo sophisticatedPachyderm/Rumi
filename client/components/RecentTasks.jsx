@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Task from './Task.jsx';
 import moment from 'moment';
+import urgency from '../urgency.service';
 
 let RecentTasks = ({recentTasks}) => (
   <ul>
@@ -11,7 +12,7 @@ let RecentTasks = ({recentTasks}) => (
           <Task
             id={recentTask.id}
             name={recentTask.name}
-            due={moment().endOf(recentTask.dueBy).fromNow()}
+            dueBy={moment().endOf(recentTask.dueBy).fromNow()}
             overdue={2}
             />
         </div>
@@ -23,13 +24,13 @@ let RecentTasks = ({recentTasks}) => (
 RecentTasks.propTypes = {
   recentTasks: PropTypes.arrayOf(PropTypes.shape({
     name: PropTypes.string.isRequired,
-    due: PropTypes.string.isRequired,
+    dueBy: PropTypes.string.isRequired,
   }).isRequired).isRequired,
 };
 
 const mapStateToProps = function(state) {
   return {
-    recentTasks: state.tasks
+    recentTasks: urgency(state.tasks, 'recent')
   };
 };
 

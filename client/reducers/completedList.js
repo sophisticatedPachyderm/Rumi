@@ -7,7 +7,7 @@ const completed = (state, action) => {
       id: action.id,
       name: action.name,
       user: action.user,
-      due: action.due,
+      createdAt: action.createdAt,
     };
   default:
     return state;
@@ -20,7 +20,7 @@ const completedList = (state = [], action) => {
 
   case 'ADD_COMPLETED':
     return [
-      ...state, completed(undefined, action)
+      completed(undefined, action), ...state
     ];
   case 'ADD_ALL_COMPLETED':
     return action.completedList;
