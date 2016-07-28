@@ -23,13 +23,7 @@ const task = (state, action) => {
   }
 };
 
-const tasks = (state = {
-  //initial state
-  overdueTasks: [], 
-  urgentTasks: [], 
-  recentTasks: [],
-  now: Date.now()
-}, action) => {
+const tasks = (state = [], action) => {
   switch (action.type) {
 
   case 'ADD_TASK':
@@ -41,11 +35,12 @@ const tasks = (state = {
       task(t, action)  
     );
   case 'ADD_ALL_TASKS':
-    return {
-      overdueTasks: action.overdueTasks, 
-      urgentTasks: action.urgentTasks, 
-      recentTasks: action.recentTasks 
-    };
+    return action.tasks;
+    // return {
+    //   overdueTasks: action.overdueTasks, 
+    //   urgentTasks: action.urgentTasks, 
+    //   recentTasks: action.recentTasks 
+    // };
   default:
     return state;
   }

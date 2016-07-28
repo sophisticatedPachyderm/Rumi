@@ -11,7 +11,7 @@ let RecentTasks = ({recentTasks}) => (
           <Task
             id={recentTask.id}
             name={recentTask.name}
-            due={moment().endOf(recentTask.dueBy).from(this.state.now)}
+            due={moment().endOf(recentTask.dueBy).fromNow()}
             overdue={2}
             />
         </div>
@@ -29,7 +29,7 @@ RecentTasks.propTypes = {
 
 const mapStateToProps = function(state) {
   return {
-    recentTasks: state.tasks.recentTasks
+    recentTasks: state.tasks
   };
 };
 

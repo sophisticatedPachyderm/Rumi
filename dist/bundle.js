@@ -83374,22 +83374,10 @@
 	  };
 	};
 	
-	var loadAllTasks = function loadAllTasks(_ref2) {
-	  var t = _ref2.t;
-	
-	  return {
-	    type: 'ADD_ALL_TASKS',
-	    id: nextTaskId++,
-	    overdueTasks: t.overdue,
-	    urgentTasks: t.urgent,
-	    recentTasks: t.recent
-	  };
-	};
-	
-	var createTask = exports.createTask = function createTask(_ref3) {
-	  var taskName = _ref3.taskName;
-	  var dueDate = _ref3.dueDate;
-	  var interval = _ref3.interval;
+	var createTask = exports.createTask = function createTask(_ref2) {
+	  var taskName = _ref2.taskName;
+	  var dueDate = _ref2.dueDate;
+	  var interval = _ref2.interval;
 	
 	  var createListenerOn = false;
 	  return function (dispatch) {
@@ -83409,25 +83397,26 @@
 	  };
 	};
 	
-	// const reprioritizeTasks = () => {
-	//   return {
-	//     type: 'REFRESH_PRIORITY',
-	//     id: nextTaskId++,
-	//     overdueTasks: t.overdue,
-	//     urgentTasks: t.urgent,
-	//     recentTasks: t.recent
-	//   };
-	// };
+	var loadAllTasks = function loadAllTasks(_ref3) {
+	  var tasks = _ref3.tasks;
+	
+	  return {
+	    type: 'ADD_ALL_TASKS',
+	    id: nextTaskId++,
+	    tasks: tasks
+	  };
+	};
 	
 	var getAllTasks = exports.getAllTasks = function getAllTasks() {
 	  // setInterval(reprioritizeTasks, 1000 * 60);  //update every minute
 	  return function (dispatch) {
 	    _socketio2.default.emit('get all tasks');
 	    _socketio2.default.on('sending all tasks', function (tasks) {
-	      var t = _urgency2.default.prioritizeTasks(tasks);
-	      console.log('reprioritize tasks:', t);
+	      // var t = urgency.prioritizeTasks(tasks);
+	      // console.log('reprioritize tasks:', t);
 	
-	      dispatch(loadAllTasks({ t: t }));
+	      // dispatch(loadAllTasks({t}));
+	      dispatch(loadAllTasks({ tasks: tasks }));
 	    });
 	  };
 	};
@@ -83755,8 +83744,9 @@
 	};
 	
 	var mapStateToProps = function mapStateToProps(state) {
+	  //do something to filter just overdue tasks
 	  return {
-	    overdueTasks: state.tasks.overdueTasks
+	    overdueTasks: state.tasks
 	  };
 	};
 	
@@ -83904,13 +83894,7 @@
 	};
 	
 	var tasks = function tasks() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? {
-	    //initial state
-	    overdueTasks: [],
-	    urgentTasks: [],
-	    recentTasks: [],
-	    now: Date.now()
-	  } : arguments[0];
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
 	  var action = arguments[1];
 	
 	  switch (action.type) {
@@ -83922,11 +83906,12 @@
 	        return task(t, action);
 	      });
 	    case 'ADD_ALL_TASKS':
-	      return {
-	        overdueTasks: action.overdueTasks,
-	        urgentTasks: action.urgentTasks,
-	        recentTasks: action.recentTasks
-	      };
+	      return action.tasks;
+	    // return {
+	    //   overdueTasks: action.overdueTasks, 
+	    //   urgentTasks: action.urgentTasks, 
+	    //   recentTasks: action.recentTasks 
+	    // };
 	    default:
 	      return state;
 	  }
@@ -83989,7 +83974,7 @@
 	
 	var mapStateToProps = function mapStateToProps(state) {
 	  return {
-	    urgentTasks: state.tasks.urgentTasks
+	    urgentTasks: state.tasks
 	  };
 	};
 	
@@ -84035,7 +84020,7 @@
 	        _react2.default.createElement(_Task2.default, {
 	          id: recentTask.id,
 	          name: recentTask.name,
-	          due: (0, _moment2.default)().endOf(recentTask.dueBy).from(undefined.state.now),
+	          due: (0, _moment2.default)().endOf(recentTask.dueBy).fromNow(),
 	          overdue: 2
 	        })
 	      );
@@ -84052,7 +84037,7 @@
 	
 	var mapStateToProps = function mapStateToProps(state) {
 	  return {
-	    recentTasks: state.tasks.recentTasks
+	    recentTasks: state.tasks
 	  };
 	};
 	

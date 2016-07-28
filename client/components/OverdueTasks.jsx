@@ -29,8 +29,9 @@ OverdueTasks.propTypes = {
 };
 
 const mapStateToProps = function(state) {
+  //do something to filter just overdue tasks
   return {
-    overdueTasks: state.tasks.overdueTasks
+    overdueTasks: state.tasks
   };
 };
 

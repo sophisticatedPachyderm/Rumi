@@ -29,7 +29,7 @@ UrgentTasks.propTypes = {
 
 const mapStateToProps = function(state) {
   return {
-    urgentTasks: state.tasks.urgentTasks
+    urgentTasks: state.tasks
   };
 };
 

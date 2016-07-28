@@ -20,16 +20,6 @@ export const completeTask = (id) => {
   };
 };
 
-const loadAllTasks = ({t}) => {
-  return {
-    type: 'ADD_ALL_TASKS',
-    id: nextTaskId++,
-    overdueTasks: t.overdue,
-    urgentTasks: t.urgent,
-    recentTasks: t.recent
-  };
-};
-
 export const createTask = ({taskName, dueDate, interval}) => {
   var createListenerOn = false;
   return dispatch => {
@@ -49,25 +39,24 @@ export const createTask = ({taskName, dueDate, interval}) => {
   };
 };
 
-// const reprioritizeTasks = () => {
-//   return {
-//     type: 'REFRESH_PRIORITY',
-//     id: nextTaskId++,
-//     overdueTasks: t.overdue,
-//     urgentTasks: t.urgent,
-//     recentTasks: t.recent
-//   };
-// };
+const loadAllTasks = ({tasks}) => {
+  return {
+    type: 'ADD_ALL_TASKS',
+    id: nextTaskId++,
+    tasks
+  };
+};
 
 export const getAllTasks = () => {
   // setInterval(reprioritizeTasks, 1000 * 60);  //update every minute
   return dispatch => {
     socket.emit('get all tasks');
     socket.on('sending all tasks', tasks => {
-      var t = urgency.prioritizeTasks(tasks);
-      console.log('reprioritize tasks:', t);
+      // var t = urgency.prioritizeTasks(tasks);
+      // console.log('reprioritize tasks:', t);
 
-      dispatch(loadAllTasks({t}));
+      // dispatch(loadAllTasks({t}));
+      dispatch(loadAllTasks({tasks}));
     });
   };
 };
