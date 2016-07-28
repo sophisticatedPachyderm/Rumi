@@ -8,8 +8,8 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import AddTask from './AddTask.jsx';
 
 let stopClose = (e) => {
-  e.preventDefault()
-}
+  e.preventDefault();
+};
 
 const Navbar = () => (
   <AppBar

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 
@@ -6,7 +6,7 @@ let style = {
   padding: '6px',
 };
 
-const Comp = ({name, due, user}) => (
+const Completed = ({name, due, user}) => (
   <Card>
     <CardHeader
       title={name}
@@ -17,8 +17,13 @@ const Comp = ({name, due, user}) => (
   </Card>
 );
 
-export default Comp;
+Completed.propTypes = {
+  name: PropTypes.string.isRequired,
+  user: PropTypes.string.isRequired,
+  due: PropTypes.string.isRequired,
+};
 
+export default Completed;
 /*
 Onclick of completed tasks, can show additional information.
 This functionality can easily be re-added, but I am not sure if it is necessary.
