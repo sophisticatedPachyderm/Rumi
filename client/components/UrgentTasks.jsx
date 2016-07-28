@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Task from './Task.jsx';
 import moment from 'moment';
+import urgency from '../urgency.service';
 
 let UrgentTasks = ({urgentTasks}) => (
   <ul>
@@ -11,7 +12,7 @@ let UrgentTasks = ({urgentTasks}) => (
           <Task
             id={urgentTask.id}
             name={urgentTask.name}
-            due={moment().endOf(urgentTask.dueBy).fromNow()}
+            dueBy={moment().endOf(urgentTask.dueBy).fromNow()}
             color={1}
             />
         </div>
@@ -23,13 +24,13 @@ let UrgentTasks = ({urgentTasks}) => (
 UrgentTasks.propTypes = {
   urgentTasks: PropTypes.arrayOf(PropTypes.shape({
     name: PropTypes.string.isRequired,
-    due: PropTypes.string.isRequired,
+    dueBy: PropTypes.string.isRequired,
   }).isRequired).isRequired,
 };
 
 const mapStateToProps = function(state) {
   return {
-    urgentTasks: state.tasks
+    urgentTasks: urgency(state.tasks, 'urgent')
   };
 };
 

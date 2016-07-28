@@ -5,19 +5,21 @@ import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 // import socket from './socketio';
 import { connect } from 'react-redux';
-import { createTask } from './actions/taskActions';
+import { addTaskToServer } from './actions/taskActions';
 
 class AddTask extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      intervalNum: 0,
+      intervalNum: 1,
       intervalVal: 1,
       showModal: false,
       taskName: '',
       taskDueDate: '',
       taskInterval: 0
     };
+
+    console.log('AddTask props:', props);
   }
 
   close() {
@@ -49,7 +51,7 @@ class AddTask extends React.Component {
     let days = n => hours(n) * 24;
 
     let n = this.state.intervalNum;
-
+    console.log('calcDueDateAndInterval:', n);
     // 1 = hours; 2 = days
     if (this.state.intervalVal === 1) {
       this.state.taskInterval = hours(n);
@@ -65,21 +67,16 @@ class AddTask extends React.Component {
     this.calcDueDateAndInterval();
 
     let taskName = this.state.taskName;
-    let dueDate =  this.state.taskDueDate;
+    let dueBy = this.state.taskDueDate;
     let interval = this.state.taskInterval;
 
-    if (!taskName || !dueDate) {
+    if (!taskName || !dueBy) {
       this.close();
       return;
     }
 
-    // socket.emit('create task', {
-    //   name: taskName,
-    //   dueBy: dueDate,
-    //   interval: interval
-    // });
+    this.props.dispatch(addTaskToServer({taskName, dueBy, interval}));
 
-    //this.props.onAddNewTask(taskName, dueDate);
     this.setState({
       taskName: '',
       taskDueDate: ''

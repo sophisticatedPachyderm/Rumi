@@ -1,39 +1,65 @@
 import socket from '../socketio.js';
 import urgency from '../urgency.service';
+import { addCompleted } from './completedActions';
 
 let nextTaskId = 0;  //when we set initial state, we need to update this
 
-const addTask = ({name, interval}) => {
+const addTask = (data) => {
   return {
     type: 'ADD_TASK',
-    id: nextTaskId++,
-    name,
-    interval,
-    dueBy: Date.now() + interval
+    data: data
   };
 };
 
-export const completeTask = (id) => {
-  return {
-    type: 'COMPLETE_TASK',
-    id
-  };
-};
-
-export const createTask = ({taskName, dueDate, interval}) => {
-  var createListenerOn = false;
+export const addTaskToServer = ({taskName, dueBy, interval}) => {
+  var listenerOn = false;
   return dispatch => {
 
     socket.emit('create task', {
       name: taskName,
-      dueBy: dueDate,
-      interval: interval
+      dueBy,
+      interval
     });
 
-    if (!createListenerOn) {
-      createListenerOn = true;
+    if (!listenerOn) {
+      listenerOn = true;
       socket.on('create task', newTask => {
-        console.log('create task response', newTask);
+        dispatch(addTask(newTask));
+      });
+    }
+  };
+};
+
+const completeTask = ({id, dueBy, updatedAt}) => {
+  return {
+    type: 'COMPLETE_TASK',
+    id,
+    dueBy,
+    updatedAt
+  };
+};
+
+export const completeTaskToServer = ({taskId}) => {
+  var listenerOn = false;
+  return dispatch => {
+    
+    socket.emit('complete task', taskId);
+
+    if (!listenerOn) {
+      listenerOn = true;
+
+      socket.on('complete task', function(completedTask) {
+        console.log('completed:', completedTask);
+        let id = completedTask.taskId;
+        let updatedAt = completedTask.task.updatedAt;
+        let dueBy = completedTask.task.dueBy;
+        dispatch(completeTask({id, dueBy, updatedAt}));
+
+        id = completedTask.id;
+        let name = completedTask.task.name;
+        let user = completedTask.user.name;
+        let createdAt = completedTask.createdAt;
+        dispatch(addCompleted({id, name, user, createdAt}));
       });
     }
   };
@@ -52,10 +78,6 @@ export const getAllTasks = () => {
   return dispatch => {
     socket.emit('get all tasks');
     socket.on('sending all tasks', tasks => {
-      // var t = urgency.prioritizeTasks(tasks);
-      // console.log('reprioritize tasks:', t);
-
-      // dispatch(loadAllTasks({t}));
       dispatch(loadAllTasks({tasks}));
     });
   };
