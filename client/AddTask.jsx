@@ -3,7 +3,9 @@ import {Modal, Button} from 'react-bootstrap';
 import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
-import socket from './socketio';
+// import socket from './socketio';
+import { connect } from 'react-redux';
+import { createTask } from './actions/taskActions';
 
 class AddTask extends React.Component {
   constructor(props) {
@@ -71,11 +73,11 @@ class AddTask extends React.Component {
       return;
     }
 
-    socket.emit('create task', {
-      name: taskName,
-      dueBy: dueDate,
-      interval: interval
-    });
+    // socket.emit('create task', {
+    //   name: taskName,
+    //   dueBy: dueDate,
+    //   interval: interval
+    // });
 
     //this.props.onAddNewTask(taskName, dueDate);
     this.setState({
@@ -109,5 +111,6 @@ class AddTask extends React.Component {
     );
   }
 }
+AddTask = connect()(AddTask);
 
 export default AddTask;

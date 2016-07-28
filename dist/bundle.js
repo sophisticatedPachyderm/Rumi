@@ -72,19 +72,27 @@
 	
 	var _Navbar2 = _interopRequireDefault(_Navbar);
 	
-	var _Task = __webpack_require__(834);
+	var _CompletedList = __webpack_require__(875);
 	
-	var _Task2 = _interopRequireDefault(_Task);
+	var _CompletedList2 = _interopRequireDefault(_CompletedList);
 	
-	var _Comp = __webpack_require__(835);
+	var _OverdueTasks = __webpack_require__(880);
 	
-	var _Comp2 = _interopRequireDefault(_Comp);
+	var _OverdueTasks2 = _interopRequireDefault(_OverdueTasks);
+	
+	var _UrgentTasks = __webpack_require__(883);
+	
+	var _UrgentTasks2 = _interopRequireDefault(_UrgentTasks);
+	
+	var _RecentTasks = __webpack_require__(884);
+	
+	var _RecentTasks2 = _interopRequireDefault(_RecentTasks);
 	
 	var _AddTask = __webpack_require__(509);
 	
 	var _AddTask2 = _interopRequireDefault(_AddTask);
 	
-	var _urgency = __webpack_require__(851);
+	var _urgency = __webpack_require__(852);
 	
 	var _urgency2 = _interopRequireDefault(_urgency);
 	
@@ -92,11 +100,23 @@
 	
 	var _socketio2 = _interopRequireDefault(_socketio);
 	
-	var _reactRedux = __webpack_require__(852);
+	var _reduxLogger = __webpack_require__(878);
 	
-	var _redux = __webpack_require__(859);
+	var _reduxLogger2 = _interopRequireDefault(_reduxLogger);
 	
-	var _index = __webpack_require__(869);
+	var _reduxThunk = __webpack_require__(879);
+	
+	var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
+	
+	var _completedActions = __webpack_require__(871);
+	
+	var _taskActions = __webpack_require__(877);
+	
+	var _reactRedux = __webpack_require__(853);
+	
+	var _redux = __webpack_require__(860);
+	
+	var _index = __webpack_require__(873);
 	
 	var _index2 = _interopRequireDefault(_index);
 	
@@ -107,8 +127,6 @@
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	//import { Router, Route, Link } from 'react-router'
-	//import Login from './Login.jsx'
 	
 	// Necessary for Material-UI
 	
@@ -122,10 +140,15 @@
 	
 	// Components we have built
 	
+	// import Task from './Task.jsx';
+	
 	
 	// redux stuff
 	
-	var store = (0, _redux.createStore)(_index2.default);
+	
+	var middleware = [_reduxThunk2.default, (0, _reduxLogger2.default)()];
+	
+	var store = (0, _redux.createStore)(_index2.default, _redux.applyMiddleware.apply(undefined, middleware));
 	
 	var App = function (_React$Component) {
 	  _inherits(App, _React$Component);
@@ -133,56 +156,61 @@
 	  function App() {
 	    _classCallCheck(this, App);
 	
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(App).call(this));
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(App).call(this));
 	
-	    _this.state = {
-	      now: Date.now(),
-	      overdueTasks: [],
-	      recentTasks: [],
-	      urgentTasks: [],
-	      completedTasks: []
-	    };
+	    // this.state = {
+	    //   now: Date.now(),
+	    //   overdueTasks: [],
+	    //   recentTasks: [],
+	    //   urgentTasks: [],
+	    //   // completedTasks: []
+	    // };
 	
-	    setInterval(function () {
-	      _this.setState({ now: Date.now() });
+	    // setInterval(() => {
+	    //   this.setState({now: Date.now()});
 	
-	      var allTasks = [].concat(_this.state.urgentTasks, _this.state.recentTasks, _this.state.overdueTasks);
-	      _this.reprioritize(allTasks);
-	    }, 1000 * 60); // update every minute
-	    return _this;
+	    //   let allTasks = [].concat(this.state.urgentTasks, this.state.recentTasks, this.state.overdueTasks);
+	    //   this.reprioritize(allTasks);
+	    // }, 1000 * 60); // update every minute
 	  }
 	
-	  _createClass(App, [{
-	    key: 'reprioritize',
-	    value: function reprioritize(tasks) {
-	      var t = _urgency2.default.prioritizeTasks(tasks);
+	  // reprioritize(tasks) {
+	  //   var t = urgency.prioritizeTasks(tasks);
 	
-	      this.setState({
-	        overdueTasks: t.overdue,
-	        urgentTasks: t.urgent,
-	        recentTasks: t.recent
-	      });
-	    }
-	  }, {
+	  //   this.setState({
+	  //     overdueTasks: t.overdue,
+	  //     urgentTasks: t.urgent,
+	  //     recentTasks: t.recent
+	  //   });
+	  // }
+	
+	  _createClass(App, [{
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
-	      _socketio2.default.emit('get all tasks');
-	      _socketio2.default.emit('get completeds');
+	      // socket.emit('get all tasks');
+	      // socket.emit('get completeds');
 	    }
 	  }, {
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      var _this2 = this;
+	      // socket.on('sending all tasks', this.reprioritize.bind(this));
 	
-	      _socketio2.default.on('sending all tasks', this.reprioritize.bind(this));
+	      // socket.on('sending completeds', completedTasks => {
+	      //   let formatted = completedTasks.map(item => {
+	      //     return {
+	      //       name: item.task.name,
+	      //       user: item.user.name,
+	      //       createdAt: item.createdAt,
+	      //       id: item.id
+	      //     };
+	      //   });
+	      //   console.log('get completedTasks', formatted);
+	      //   this.setState({completedTasks: formatted});
+	      // });
 	
-	      _socketio2.default.on('sending completeds', function (completedTasks) {
-	        _this2.setState({ completedTasks: completedTasks });
-	      });
-	
-	      _socketio2.default.on('create task', function (newTask) {
-	        _socketio2.default.emit('get all tasks');
-	      });
+	      // socket.on('create task', newTask => {
+	      //   socket.emit('get all tasks');
+	      // });
 	
 	      _socketio2.default.on('complete task', function (completedTask) {
 	        _socketio2.default.emit('get all tasks');
@@ -198,7 +226,6 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this3 = this;
 	
 	      return _react2.default.createElement(
 	        _MuiThemeProvider2.default,
@@ -218,53 +245,12 @@
 	            _react2.default.createElement(
 	              'div',
 	              { className: 'col-xs-12' },
-	              this.state.overdueTasks.map(function (overdueTask) {
-	                return _react2.default.createElement(
-	                  'div',
-	                  { className: 'col-xs-3' },
-	                  _react2.default.createElement(_Task2.default, {
-	                    id: overdueTask.id,
-	                    name: overdueTask.name,
-	                    due: (0, _moment2.default)().endOf(overdueTask.dueBy).fromNow(),
-	                    color: 0,
-	                    key: overdueTask.id
-	                  })
-	                );
-	              }),
-	              this.state.urgentTasks.map(function (urgentTask) {
-	                return _react2.default.createElement(
-	                  'div',
-	                  { className: 'col-xs-3', key: urgentTask.id },
-	                  _react2.default.createElement(_Task2.default, {
-	                    id: urgentTask.id,
-	                    name: urgentTask.name,
-	                    due: (0, _moment2.default)().endOf(urgentTask.dueBy).fromNow(),
-	                    color: 1
-	                  })
-	                );
-	              }),
-	              this.state.recentTasks.map(function (recentTask) {
-	                return _react2.default.createElement(
-	                  'div',
-	                  { className: 'col-xs-3', key: recentTask.id },
-	                  _react2.default.createElement(_Task2.default, {
-	                    id: recentTask.id,
-	                    name: recentTask.name,
-	                    due: (0, _moment2.default)().endOf(recentTask.dueBy).from(_this3.state.now),
-	                    overdue: 2
-	                  })
-	                );
-	              })
+	              _react2.default.createElement(_OverdueTasks2.default, null),
+	              _react2.default.createElement(_UrgentTasks2.default, null),
+	              _react2.default.createElement(_RecentTasks2.default, null)
 	            )
 	          ),
-	          this.state.completedTasks.map(function (completed) {
-	            return _react2.default.createElement(_Comp2.default, {
-	              name: completed.task.name,
-	              due: (0, _moment2.default)(completed.createdAt).fromNow(),
-	              user: completed.user.name,
-	              key: completed.id
-	            });
-	          })
+	          _react2.default.createElement(_CompletedList2.default, null)
 	        )
 	      );
 	    }
@@ -273,16 +259,14 @@
 	  return App;
 	}(_react2.default.Component);
 	
-	var render = function render() {
-	  _reactDom2.default.render(_react2.default.createElement(
-	    _reactRedux.Provider,
-	    { store: store },
-	    _react2.default.createElement(App, null)
-	  ), document.getElementById('app'));
-	};
+	store.dispatch((0, _completedActions.getAllCompleted)());
+	store.dispatch((0, _taskActions.getAllTasks)());
 	
-	render();
-	store.subscribe(render);
+	_reactDom2.default.render(_react2.default.createElement(
+	  _reactRedux.Provider,
+	  { store: store },
+	  _react2.default.createElement(App, null)
+	), document.getElementById('app'));
 	
 	// Removed Routes for the sake of building the single App page.
 	// TODO: reconnect the app using routers.
@@ -50886,9 +50870,9 @@
 	
 	var _MenuItem2 = _interopRequireDefault(_MenuItem);
 	
-	var _socketio = __webpack_require__(787);
+	var _reactRedux = __webpack_require__(853);
 	
-	var _socketio2 = _interopRequireDefault(_socketio);
+	var _taskActions = __webpack_require__(877);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -50897,6 +50881,8 @@
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	// import socket from './socketio';
+	
 	
 	var AddTask = function (_React$Component) {
 	  _inherits(AddTask, _React$Component);
@@ -50981,11 +50967,11 @@
 	        return;
 	      }
 	
-	      _socketio2.default.emit('create task', {
-	        name: taskName,
-	        dueBy: dueDate,
-	        interval: interval
-	      });
+	      // socket.emit('create task', {
+	      //   name: taskName,
+	      //   dueBy: dueDate,
+	      //   interval: interval
+	      // });
 	
 	      //this.props.onAddNewTask(taskName, dueDate);
 	      this.setState({
@@ -51042,24 +51028,9 @@
 	  return AddTask;
 	}(_react2.default.Component);
 	
-	exports.default = AddTask;
-	/*  code to add to App.jsx
+	AddTask = (0, _reactRedux.connect)()(AddTask);
 	
-	*** component to add to App.jsx ***
-	<div>
-	  <AddTask onAddNewTask={this.handleAddNewTask.bind(this)}/>
-	</div>
-
-	*** handler to add to App.jsx ***
-	handleAddNewTask(taskName, dueDate) {
-	  // this function will handle
-	  // posting new task to db &
-	  // add to pending tasks
-	  // how to implement???
-	  console.log('taskName:', taskName);
-	  console.log('dueDate:', dueDate);
-	}
-	*/
+	exports.default = AddTask;
 
 /***/ },
 /* 510 */
@@ -79963,169 +79934,10 @@
 
 
 /***/ },
-/* 834 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	var _react = __webpack_require__(1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _Paper = __webpack_require__(482);
-	
-	var _Paper2 = _interopRequireDefault(_Paper);
-	
-	var _socketio = __webpack_require__(787);
-	
-	var _socketio2 = _interopRequireDefault(_socketio);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var style = {
-	  height: 50,
-	  width: 50,
-	  margin: 10,
-	  textAlign: 'center',
-	  display: 'inline-block',
-	  overflow: 'hidden'
-	};
-	
-	var Task = function (_React$Component) {
-	  _inherits(Task, _React$Component);
-	
-	  function Task(props) {
-	    _classCallCheck(this, Task);
-	
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Task).call(this, props));
-	
-	    _this.state = {
-	      id: _this.props.id,
-	      name: _this.props.name,
-	      due: _this.props.due,
-	      color: _this.props.color
-	    };
-	
-	    return _this;
-	  }
-	
-	  _createClass(Task, [{
-	    key: 'completeTask',
-	    value: function completeTask() {
-	      _socketio2.default.emit('complete task', this.state.id);
-	      console.log(_socketio2.default);
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	
-	      var style2 = Object.assign({}, style);
-	      if (this.state.color === 0) {
-	        style2.border = '2px solid red';
-	      } else if (this.state.color === 1) {
-	        style2.border = '2px solid yellow';
-	      } else {
-	        style2.border = '2px solid green';
-	      }
-	
-	      return _react2.default.createElement(
-	        'div',
-	        null,
-	        _react2.default.createElement(
-	          _Paper2.default,
-	          {
-	            style: style2,
-	            zDepth: 3,
-	            circle: true,
-	            onTouchTap: this.completeTask.bind(this)
-	          },
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'innerTaskText' },
-	            this.state.name
-	          )
-	        )
-	      );
-	    }
-	  }]);
-	
-	  return Task;
-	}(_react2.default.Component);
-	
-	exports.default = Task;
-
-/***/ },
-/* 835 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _react = __webpack_require__(1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _Card = __webpack_require__(836);
-	
-	var _FlatButton = __webpack_require__(848);
-	
-	var _FlatButton2 = _interopRequireDefault(_FlatButton);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var style = {
-	  padding: '6px'
-	};
-	
-	var Comp = function Comp(_ref) {
-	  var name = _ref.name;
-	  var due = _ref.due;
-	  var user = _ref.user;
-	  return _react2.default.createElement(
-	    _Card.Card,
-	    null,
-	    _react2.default.createElement(_Card.CardHeader, {
-	      title: name,
-	      subtitle: 'Completed by ' + user + ' ' + due,
-	      avatar: 'http://lorempixel.com/100/100/nature/',
-	      style: style
-	    })
-	  );
-	};
-	
-	exports.default = Comp;
-	
-	/*
-	Onclick of completed tasks, can show additional information.
-	This functionality can easily be re-added, but I am not sure if it is necessary.
-
-	props on CardHeader:
-	  actAsExpander={true}
-	  showExpandableButton={true}
-
-	comp below CardHeader:
-	  <CardText expandable={true}>
-	    {`${user} completed ${name} ${due}`}
-	  </CardText>
-	*/
-
-/***/ },
-/* 836 */
+/* 834 */,
+/* 835 */,
+/* 836 */,
+/* 837 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -80135,31 +79947,31 @@
 	});
 	exports.default = exports.CardExpandable = exports.CardActions = exports.CardText = exports.CardMedia = exports.CardTitle = exports.CardHeader = exports.Card = undefined;
 	
-	var _Card2 = __webpack_require__(837);
+	var _Card2 = __webpack_require__(838);
 	
 	var _Card3 = _interopRequireDefault(_Card2);
 	
-	var _CardHeader2 = __webpack_require__(841);
+	var _CardHeader2 = __webpack_require__(842);
 	
 	var _CardHeader3 = _interopRequireDefault(_CardHeader2);
 	
-	var _CardTitle2 = __webpack_require__(844);
+	var _CardTitle2 = __webpack_require__(845);
 	
 	var _CardTitle3 = _interopRequireDefault(_CardTitle2);
 	
-	var _CardMedia2 = __webpack_require__(845);
+	var _CardMedia2 = __webpack_require__(846);
 	
 	var _CardMedia3 = _interopRequireDefault(_CardMedia2);
 	
-	var _CardText2 = __webpack_require__(846);
+	var _CardText2 = __webpack_require__(847);
 	
 	var _CardText3 = _interopRequireDefault(_CardText2);
 	
-	var _CardActions2 = __webpack_require__(847);
+	var _CardActions2 = __webpack_require__(848);
 	
 	var _CardActions3 = _interopRequireDefault(_CardActions2);
 	
-	var _CardExpandable2 = __webpack_require__(838);
+	var _CardExpandable2 = __webpack_require__(839);
 	
 	var _CardExpandable3 = _interopRequireDefault(_CardExpandable2);
 	
@@ -80175,7 +79987,7 @@
 	exports.default = _Card3.default;
 
 /***/ },
-/* 837 */
+/* 838 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -80200,7 +80012,7 @@
 	
 	var _Paper2 = _interopRequireDefault(_Paper);
 	
-	var _CardExpandable = __webpack_require__(838);
+	var _CardExpandable = __webpack_require__(839);
 	
 	var _CardExpandable2 = _interopRequireDefault(_CardExpandable);
 	
@@ -80373,7 +80185,7 @@
 	exports.default = Card;
 
 /***/ },
-/* 838 */
+/* 839 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -80392,11 +80204,11 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _keyboardArrowUp = __webpack_require__(839);
+	var _keyboardArrowUp = __webpack_require__(840);
 	
 	var _keyboardArrowUp2 = _interopRequireDefault(_keyboardArrowUp);
 	
-	var _keyboardArrowDown = __webpack_require__(840);
+	var _keyboardArrowDown = __webpack_require__(841);
 	
 	var _keyboardArrowDown2 = _interopRequireDefault(_keyboardArrowDown);
 	
@@ -80463,7 +80275,7 @@
 	exports.default = CardExpandable;
 
 /***/ },
-/* 839 */
+/* 840 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -80500,7 +80312,7 @@
 	exports.default = HardwareKeyboardArrowUp;
 
 /***/ },
-/* 840 */
+/* 841 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -80537,7 +80349,7 @@
 	exports.default = HardwareKeyboardArrowDown;
 
 /***/ },
-/* 841 */
+/* 842 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -80558,7 +80370,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _Avatar = __webpack_require__(842);
+	var _Avatar = __webpack_require__(843);
 	
 	var _Avatar2 = _interopRequireDefault(_Avatar);
 	
@@ -80738,7 +80550,7 @@
 	exports.default = CardHeader;
 
 /***/ },
-/* 842 */
+/* 843 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -80748,7 +80560,7 @@
 	});
 	exports.default = undefined;
 	
-	var _Avatar = __webpack_require__(843);
+	var _Avatar = __webpack_require__(844);
 	
 	var _Avatar2 = _interopRequireDefault(_Avatar);
 	
@@ -80757,7 +80569,7 @@
 	exports.default = _Avatar2.default;
 
 /***/ },
-/* 843 */
+/* 844 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -80916,7 +80728,7 @@
 	exports.default = Avatar;
 
 /***/ },
-/* 844 */
+/* 845 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -81071,7 +80883,7 @@
 	exports.default = CardTitle;
 
 /***/ },
-/* 845 */
+/* 846 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -81261,7 +81073,7 @@
 	exports.default = CardMedia;
 
 /***/ },
-/* 846 */
+/* 847 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -81360,7 +81172,7 @@
 	exports.default = CardText;
 
 /***/ },
-/* 847 */
+/* 848 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -81464,7 +81276,7 @@
 	exports.default = CardActions;
 
 /***/ },
-/* 848 */
+/* 849 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -81474,7 +81286,7 @@
 	});
 	exports.default = undefined;
 	
-	var _FlatButton = __webpack_require__(849);
+	var _FlatButton = __webpack_require__(850);
 	
 	var _FlatButton2 = _interopRequireDefault(_FlatButton);
 	
@@ -81483,7 +81295,7 @@
 	exports.default = _FlatButton2.default;
 
 /***/ },
-/* 849 */
+/* 850 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -81516,7 +81328,7 @@
 	
 	var _EnhancedButton2 = _interopRequireDefault(_EnhancedButton);
 	
-	var _FlatButtonLabel = __webpack_require__(850);
+	var _FlatButtonLabel = __webpack_require__(851);
 	
 	var _FlatButtonLabel2 = _interopRequireDefault(_FlatButtonLabel);
 	
@@ -81800,7 +81612,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 850 */
+/* 851 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -81881,7 +81693,7 @@
 	exports.default = FlatButtonLabel;
 
 /***/ },
-/* 851 */
+/* 852 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -81923,7 +81735,7 @@
 	}
 
 /***/ },
-/* 852 */
+/* 853 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -81931,11 +81743,11 @@
 	exports.__esModule = true;
 	exports.connect = exports.Provider = undefined;
 	
-	var _Provider = __webpack_require__(853);
+	var _Provider = __webpack_require__(854);
 	
 	var _Provider2 = _interopRequireDefault(_Provider);
 	
-	var _connect = __webpack_require__(856);
+	var _connect = __webpack_require__(857);
 	
 	var _connect2 = _interopRequireDefault(_connect);
 	
@@ -81945,7 +81757,7 @@
 	exports.connect = _connect2["default"];
 
 /***/ },
-/* 853 */
+/* 854 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -81955,11 +81767,11 @@
 	
 	var _react = __webpack_require__(1);
 	
-	var _storeShape = __webpack_require__(854);
+	var _storeShape = __webpack_require__(855);
 	
 	var _storeShape2 = _interopRequireDefault(_storeShape);
 	
-	var _warning = __webpack_require__(855);
+	var _warning = __webpack_require__(856);
 	
 	var _warning2 = _interopRequireDefault(_warning);
 	
@@ -82029,7 +81841,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 854 */
+/* 855 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -82045,7 +81857,7 @@
 	});
 
 /***/ },
-/* 855 */
+/* 856 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -82074,7 +81886,7 @@
 	}
 
 /***/ },
-/* 856 */
+/* 857 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -82086,19 +81898,19 @@
 	
 	var _react = __webpack_require__(1);
 	
-	var _storeShape = __webpack_require__(854);
+	var _storeShape = __webpack_require__(855);
 	
 	var _storeShape2 = _interopRequireDefault(_storeShape);
 	
-	var _shallowEqual = __webpack_require__(857);
+	var _shallowEqual = __webpack_require__(858);
 	
 	var _shallowEqual2 = _interopRequireDefault(_shallowEqual);
 	
-	var _wrapActionCreators = __webpack_require__(858);
+	var _wrapActionCreators = __webpack_require__(859);
 	
 	var _wrapActionCreators2 = _interopRequireDefault(_wrapActionCreators);
 	
-	var _warning = __webpack_require__(855);
+	var _warning = __webpack_require__(856);
 	
 	var _warning2 = _interopRequireDefault(_warning);
 	
@@ -82106,7 +81918,7 @@
 	
 	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 	
-	var _hoistNonReactStatics = __webpack_require__(868);
+	var _hoistNonReactStatics = __webpack_require__(869);
 	
 	var _hoistNonReactStatics2 = _interopRequireDefault(_hoistNonReactStatics);
 	
@@ -82473,7 +82285,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 857 */
+/* 858 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -82504,7 +82316,7 @@
 	}
 
 /***/ },
-/* 858 */
+/* 859 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -82512,7 +82324,7 @@
 	exports.__esModule = true;
 	exports["default"] = wrapActionCreators;
 	
-	var _redux = __webpack_require__(859);
+	var _redux = __webpack_require__(860);
 	
 	function wrapActionCreators(actionCreators) {
 	  return function (dispatch) {
@@ -82521,7 +82333,7 @@
 	}
 
 /***/ },
-/* 859 */
+/* 860 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -82529,27 +82341,27 @@
 	exports.__esModule = true;
 	exports.compose = exports.applyMiddleware = exports.bindActionCreators = exports.combineReducers = exports.createStore = undefined;
 	
-	var _createStore = __webpack_require__(860);
+	var _createStore = __webpack_require__(861);
 	
 	var _createStore2 = _interopRequireDefault(_createStore);
 	
-	var _combineReducers = __webpack_require__(863);
+	var _combineReducers = __webpack_require__(864);
 	
 	var _combineReducers2 = _interopRequireDefault(_combineReducers);
 	
-	var _bindActionCreators = __webpack_require__(865);
+	var _bindActionCreators = __webpack_require__(866);
 	
 	var _bindActionCreators2 = _interopRequireDefault(_bindActionCreators);
 	
-	var _applyMiddleware = __webpack_require__(866);
+	var _applyMiddleware = __webpack_require__(867);
 	
 	var _applyMiddleware2 = _interopRequireDefault(_applyMiddleware);
 	
-	var _compose = __webpack_require__(867);
+	var _compose = __webpack_require__(868);
 	
 	var _compose2 = _interopRequireDefault(_compose);
 	
-	var _warning = __webpack_require__(864);
+	var _warning = __webpack_require__(865);
 	
 	var _warning2 = _interopRequireDefault(_warning);
 	
@@ -82573,7 +82385,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 860 */
+/* 861 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -82586,7 +82398,7 @@
 	
 	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 	
-	var _symbolObservable = __webpack_require__(861);
+	var _symbolObservable = __webpack_require__(862);
 	
 	var _symbolObservable2 = _interopRequireDefault(_symbolObservable);
 	
@@ -82840,18 +82652,18 @@
 	}
 
 /***/ },
-/* 861 */
+/* 862 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/* global window */
 	'use strict';
 	
-	module.exports = __webpack_require__(862)(global || window || this);
+	module.exports = __webpack_require__(863)(global || window || this);
 	
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 862 */
+/* 863 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -82876,7 +82688,7 @@
 
 
 /***/ },
-/* 863 */
+/* 864 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -82884,13 +82696,13 @@
 	exports.__esModule = true;
 	exports["default"] = combineReducers;
 	
-	var _createStore = __webpack_require__(860);
+	var _createStore = __webpack_require__(861);
 	
 	var _isPlainObject = __webpack_require__(277);
 	
 	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 	
-	var _warning = __webpack_require__(864);
+	var _warning = __webpack_require__(865);
 	
 	var _warning2 = _interopRequireDefault(_warning);
 	
@@ -83009,7 +82821,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 864 */
+/* 865 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -83039,7 +82851,7 @@
 	}
 
 /***/ },
-/* 865 */
+/* 866 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -83095,7 +82907,7 @@
 	}
 
 /***/ },
-/* 866 */
+/* 867 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -83106,7 +82918,7 @@
 	
 	exports["default"] = applyMiddleware;
 	
-	var _compose = __webpack_require__(867);
+	var _compose = __webpack_require__(868);
 	
 	var _compose2 = _interopRequireDefault(_compose);
 	
@@ -83158,7 +82970,7 @@
 	}
 
 /***/ },
-/* 867 */
+/* 868 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -83203,7 +83015,7 @@
 	}
 
 /***/ },
-/* 868 */
+/* 869 */
 /***/ function(module, exports) {
 
 	/**
@@ -83259,7 +83071,100 @@
 
 
 /***/ },
-/* 869 */
+/* 870 */,
+/* 871 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.getAllCompleted = exports.addCompleted = undefined;
+	
+	var _socketio = __webpack_require__(787);
+	
+	var _socketio2 = _interopRequireDefault(_socketio);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var nextCompletedId = 0; //when we set initial state, we need to update this
+	
+	var addCompleted = exports.addCompleted = function addCompleted(_ref) {
+	  var name = _ref.name;
+	  var user = _ref.user;
+	  var due = _ref.due;
+	
+	  return {
+	    type: 'ADD_COMPLETED',
+	    id: nextCompletedId++,
+	    name: name,
+	    user: user,
+	    due: due
+	  };
+	};
+	
+	var loadAllCompleted = function loadAllCompleted(_ref2) {
+	  var completedList = _ref2.completedList;
+	
+	  return {
+	    type: 'ADD_ALL_COMPLETED',
+	    id: nextCompletedId++,
+	    completedList: completedList
+	  };
+	};
+	
+	var getAllCompleted = exports.getAllCompleted = function getAllCompleted() {
+	  return function (dispatch) {
+	    _socketio2.default.emit('get completeds');
+	
+	    _socketio2.default.on('sending completeds', function (completedTasks) {
+	      var formatted = completedTasks.map(function (item) {
+	        return {
+	          name: item.task.name,
+	          user: item.user.name,
+	          createdAt: item.createdAt,
+	          id: item.id
+	        };
+	      });
+	      console.log('get completedTasks', formatted);
+	      dispatch(loadAllCompleted({ completedList: formatted }));
+	    });
+	  };
+	};
+
+/***/ },
+/* 872 */,
+/* 873 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _redux = __webpack_require__(860);
+	
+	var _completedList = __webpack_require__(874);
+	
+	var _completedList2 = _interopRequireDefault(_completedList);
+	
+	var _tasks = __webpack_require__(882);
+	
+	var _tasks2 = _interopRequireDefault(_tasks);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var appReducer = (0, _redux.combineReducers)({
+	  completedList: _completedList2.default,
+	  tasks: _tasks2.default
+	});
+	
+	exports.default = appReducer;
+
+/***/ },
+/* 874 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -83267,20 +83172,893 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.default = appReducer;
-	function appReducer() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
-	  var action = arguments[1];
+	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+	
+	var completed = function completed(state, action) {
 	
 	  switch (action.type) {
-	    case 'INCREMENT':
-	      return state + 1;
-	    case 'DECREMENT':
-	      return state - 1;
+	
+	    case 'ADD_COMPLETED':
+	      return {
+	        id: action.id,
+	        name: action.name,
+	        user: action.user,
+	        due: action.due
+	      };
 	    default:
 	      return state;
 	  }
+	};
+	
+	var completedList = function completedList() {
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
+	  var action = arguments[1];
+	
+	  switch (action.type) {
+	
+	    case 'ADD_COMPLETED':
+	      return [].concat(_toConsumableArray(state), [completed(undefined, action)]);
+	    case 'ADD_ALL_COMPLETED':
+	      return action.completedList;
+	    default:
+	      return state;
+	  }
+	};
+	
+	exports.default = completedList;
+
+/***/ },
+/* 875 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactRedux = __webpack_require__(853);
+	
+	var _Completed = __webpack_require__(876);
+	
+	var _Completed2 = _interopRequireDefault(_Completed);
+	
+	var _moment = __webpack_require__(338);
+	
+	var _moment2 = _interopRequireDefault(_moment);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var CompletedList = function CompletedList(_ref) {
+	  var completedList = _ref.completedList;
+	  return _react2.default.createElement(
+	    'ul',
+	    null,
+	    completedList.map(function (completed) {
+	      return _react2.default.createElement(_Completed2.default, {
+	        name: completed.name,
+	        due: (0, _moment2.default)(completed.createdAt).fromNow(),
+	        user: completed.user,
+	        key: completed.id
+	      });
+	    })
+	  );
+	};
+	
+	CompletedList.propTypes = {
+	  completedList: _react.PropTypes.arrayOf(_react.PropTypes.shape({
+	    name: _react.PropTypes.string.isRequired,
+	    user: _react.PropTypes.string.isRequired,
+	    createdAt: _react.PropTypes.string.isRequired
+	  }).isRequired).isRequired
+	};
+	
+	var mapStateToProps = function mapStateToProps(state) {
+	  return {
+	    completedList: state.completedList
+	  };
+	};
+	
+	CompletedList = (0, _reactRedux.connect)(mapStateToProps)(CompletedList);
+	
+	exports.default = CompletedList;
+
+/***/ },
+/* 876 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _Card = __webpack_require__(837);
+	
+	var _FlatButton = __webpack_require__(849);
+	
+	var _FlatButton2 = _interopRequireDefault(_FlatButton);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var style = {
+	  padding: '6px'
+	};
+	
+	var Completed = function Completed(_ref) {
+	  var name = _ref.name;
+	  var due = _ref.due;
+	  var user = _ref.user;
+	  return _react2.default.createElement(
+	    _Card.Card,
+	    null,
+	    _react2.default.createElement(_Card.CardHeader, {
+	      title: name,
+	      subtitle: 'Completed by ' + user + ' ' + due,
+	      avatar: 'http://lorempixel.com/100/100/nature/',
+	      style: style
+	    })
+	  );
+	};
+	
+	Completed.propTypes = {
+	  name: _react.PropTypes.string.isRequired,
+	  user: _react.PropTypes.string.isRequired,
+	  due: _react.PropTypes.string.isRequired
+	};
+	
+	exports.default = Completed;
+	/*
+	Onclick of completed tasks, can show additional information.
+	This functionality can easily be re-added, but I am not sure if it is necessary.
+
+	props on CardHeader:
+	  actAsExpander={true}
+	  showExpandableButton={true}
+
+	comp below CardHeader:
+	  <CardText expandable={true}>
+	    {`${user} completed ${name} ${due}`}
+	  </CardText>
+	*/
+
+/***/ },
+/* 877 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.getAllTasks = exports.createTask = exports.completeTask = undefined;
+	
+	var _socketio = __webpack_require__(787);
+	
+	var _socketio2 = _interopRequireDefault(_socketio);
+	
+	var _urgency = __webpack_require__(852);
+	
+	var _urgency2 = _interopRequireDefault(_urgency);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var nextTaskId = 0; //when we set initial state, we need to update this
+	
+	var addTask = function addTask(_ref) {
+	  var name = _ref.name;
+	  var interval = _ref.interval;
+	
+	  return {
+	    type: 'ADD_TASK',
+	    id: nextTaskId++,
+	    name: name,
+	    interval: interval,
+	    dueBy: Date.now() + interval
+	  };
+	};
+	
+	var completeTask = exports.completeTask = function completeTask(id) {
+	  return {
+	    type: 'COMPLETE_TASK',
+	    id: id
+	  };
+	};
+	
+	var loadAllTasks = function loadAllTasks(_ref2) {
+	  var t = _ref2.t;
+	
+	  return {
+	    type: 'ADD_ALL_TASKS',
+	    id: nextTaskId++,
+	    overdueTasks: t.overdue,
+	    urgentTasks: t.urgent,
+	    recentTasks: t.recent
+	  };
+	};
+	
+	var createTask = exports.createTask = function createTask(_ref3) {
+	  var taskName = _ref3.taskName;
+	  var dueDate = _ref3.dueDate;
+	  var interval = _ref3.interval;
+	
+	  var createListenerOn = false;
+	  return function (dispatch) {
+	
+	    _socketio2.default.emit('create task', {
+	      name: taskName,
+	      dueBy: dueDate,
+	      interval: interval
+	    });
+	
+	    if (!createListenerOn) {
+	      createListenerOn = true;
+	      _socketio2.default.on('create task', function (newTask) {
+	        console.log('create task response', newTask);
+	      });
+	    }
+	  };
+	};
+	
+	// const reprioritizeTasks = () => {
+	//   return {
+	//     type: 'REFRESH_PRIORITY',
+	//     id: nextTaskId++,
+	//     overdueTasks: t.overdue,
+	//     urgentTasks: t.urgent,
+	//     recentTasks: t.recent
+	//   };
+	// };
+	
+	var getAllTasks = exports.getAllTasks = function getAllTasks() {
+	  // setInterval(reprioritizeTasks, 1000 * 60);  //update every minute
+	  return function (dispatch) {
+	    _socketio2.default.emit('get all tasks');
+	    _socketio2.default.on('sending all tasks', function (tasks) {
+	      var t = _urgency2.default.prioritizeTasks(tasks);
+	      console.log('reprioritize tasks:', t);
+	
+	      dispatch(loadAllTasks({ t: t }));
+	    });
+	  };
+	};
+	
+	// setInterval(() => {
+	//   this.setState({now: Date.now()});
+	
+	//   let allTasks = [].concat(this.state.urgentTasks, this.state.recentTasks, this.state.overdueTasks);
+	//   this.reprioritize(allTasks);
+	// }, 1000 * 60); // update every minute
+
+/***/ },
+/* 878 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+	
+	function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; }
+	
+	var repeat = function repeat(str, times) {
+	  return new Array(times + 1).join(str);
+	};
+	var pad = function pad(num, maxLength) {
+	  return repeat("0", maxLength - num.toString().length) + num;
+	};
+	var formatTime = function formatTime(time) {
+	  return "@ " + pad(time.getHours(), 2) + ":" + pad(time.getMinutes(), 2) + ":" + pad(time.getSeconds(), 2) + "." + pad(time.getMilliseconds(), 3);
+	};
+	
+	// Use the new performance api to get better precision if available
+	var timer = typeof performance !== "undefined" && typeof performance.now === "function" ? performance : Date;
+	
+	/**
+	 * parse the level option of createLogger
+	 *
+	 * @property {string | function | object} level - console[level]
+	 * @property {object} action
+	 * @property {array} payload
+	 * @property {string} type
+	 */
+	
+	function getLogLevel(level, action, payload, type) {
+	  switch (typeof level === "undefined" ? "undefined" : _typeof(level)) {
+	    case "object":
+	      return typeof level[type] === "function" ? level[type].apply(level, _toConsumableArray(payload)) : level[type];
+	    case "function":
+	      return level(action);
+	    default:
+	      return level;
+	  }
 	}
+	
+	/**
+	 * Creates logger with followed options
+	 *
+	 * @namespace
+	 * @property {object} options - options for logger
+	 * @property {string | function | object} options.level - console[level]
+	 * @property {boolean} options.duration - print duration of each action?
+	 * @property {boolean} options.timestamp - print timestamp with each action?
+	 * @property {object} options.colors - custom colors
+	 * @property {object} options.logger - implementation of the `console` API
+	 * @property {boolean} options.logErrors - should errors in action execution be caught, logged, and re-thrown?
+	 * @property {boolean} options.collapsed - is group collapsed?
+	 * @property {boolean} options.predicate - condition which resolves logger behavior
+	 * @property {function} options.stateTransformer - transform state before print
+	 * @property {function} options.actionTransformer - transform action before print
+	 * @property {function} options.errorTransformer - transform error before print
+	 */
+	
+	function createLogger() {
+	  var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	  var _options$level = options.level;
+	  var level = _options$level === undefined ? "log" : _options$level;
+	  var _options$logger = options.logger;
+	  var logger = _options$logger === undefined ? console : _options$logger;
+	  var _options$logErrors = options.logErrors;
+	  var logErrors = _options$logErrors === undefined ? true : _options$logErrors;
+	  var collapsed = options.collapsed;
+	  var predicate = options.predicate;
+	  var _options$duration = options.duration;
+	  var duration = _options$duration === undefined ? false : _options$duration;
+	  var _options$timestamp = options.timestamp;
+	  var timestamp = _options$timestamp === undefined ? true : _options$timestamp;
+	  var transformer = options.transformer;
+	  var _options$stateTransfo = options.stateTransformer;
+	  var // deprecated
+	  stateTransformer = _options$stateTransfo === undefined ? function (state) {
+	    return state;
+	  } : _options$stateTransfo;
+	  var _options$actionTransf = options.actionTransformer;
+	  var actionTransformer = _options$actionTransf === undefined ? function (actn) {
+	    return actn;
+	  } : _options$actionTransf;
+	  var _options$errorTransfo = options.errorTransformer;
+	  var errorTransformer = _options$errorTransfo === undefined ? function (error) {
+	    return error;
+	  } : _options$errorTransfo;
+	  var _options$colors = options.colors;
+	  var colors = _options$colors === undefined ? {
+	    title: function title() {
+	      return "#000000";
+	    },
+	    prevState: function prevState() {
+	      return "#9E9E9E";
+	    },
+	    action: function action() {
+	      return "#03A9F4";
+	    },
+	    nextState: function nextState() {
+	      return "#4CAF50";
+	    },
+	    error: function error() {
+	      return "#F20404";
+	    }
+	  } : _options$colors;
+	
+	  // exit if console undefined
+	
+	  if (typeof logger === "undefined") {
+	    return function () {
+	      return function (next) {
+	        return function (action) {
+	          return next(action);
+	        };
+	      };
+	    };
+	  }
+	
+	  if (transformer) {
+	    console.error("Option 'transformer' is deprecated, use stateTransformer instead");
+	  }
+	
+	  var logBuffer = [];
+	  function printBuffer() {
+	    logBuffer.forEach(function (logEntry, key) {
+	      var started = logEntry.started;
+	      var startedTime = logEntry.startedTime;
+	      var action = logEntry.action;
+	      var prevState = logEntry.prevState;
+	      var error = logEntry.error;
+	      var took = logEntry.took;
+	      var nextState = logEntry.nextState;
+	
+	      var nextEntry = logBuffer[key + 1];
+	      if (nextEntry) {
+	        nextState = nextEntry.prevState;
+	        took = nextEntry.started - started;
+	      }
+	      // message
+	      var formattedAction = actionTransformer(action);
+	      var isCollapsed = typeof collapsed === "function" ? collapsed(function () {
+	        return nextState;
+	      }, action) : collapsed;
+	
+	      var formattedTime = formatTime(startedTime);
+	      var titleCSS = colors.title ? "color: " + colors.title(formattedAction) + ";" : null;
+	      var title = "action " + (timestamp ? formattedTime : "") + " " + formattedAction.type + " " + (duration ? "(in " + took.toFixed(2) + " ms)" : "");
+	
+	      // render
+	      try {
+	        if (isCollapsed) {
+	          if (colors.title) logger.groupCollapsed("%c " + title, titleCSS);else logger.groupCollapsed(title);
+	        } else {
+	          if (colors.title) logger.group("%c " + title, titleCSS);else logger.group(title);
+	        }
+	      } catch (e) {
+	        logger.log(title);
+	      }
+	
+	      var prevStateLevel = getLogLevel(level, formattedAction, [prevState], "prevState");
+	      var actionLevel = getLogLevel(level, formattedAction, [formattedAction], "action");
+	      var errorLevel = getLogLevel(level, formattedAction, [error, prevState], "error");
+	      var nextStateLevel = getLogLevel(level, formattedAction, [nextState], "nextState");
+	
+	      if (prevStateLevel) {
+	        if (colors.prevState) logger[prevStateLevel]("%c prev state", "color: " + colors.prevState(prevState) + "; font-weight: bold", prevState);else logger[prevStateLevel]("prev state", prevState);
+	      }
+	
+	      if (actionLevel) {
+	        if (colors.action) logger[actionLevel]("%c action", "color: " + colors.action(formattedAction) + "; font-weight: bold", formattedAction);else logger[actionLevel]("action", formattedAction);
+	      }
+	
+	      if (error && errorLevel) {
+	        if (colors.error) logger[errorLevel]("%c error", "color: " + colors.error(error, prevState) + "; font-weight: bold", error);else logger[errorLevel]("error", error);
+	      }
+	
+	      if (nextStateLevel) {
+	        if (colors.nextState) logger[nextStateLevel]("%c next state", "color: " + colors.nextState(nextState) + "; font-weight: bold", nextState);else logger[nextStateLevel]("next state", nextState);
+	      }
+	
+	      try {
+	        logger.groupEnd();
+	      } catch (e) {
+	        logger.log("—— log end ——");
+	      }
+	    });
+	    logBuffer.length = 0;
+	  }
+	
+	  return function (_ref) {
+	    var getState = _ref.getState;
+	    return function (next) {
+	      return function (action) {
+	        // exit early if predicate function returns false
+	        if (typeof predicate === "function" && !predicate(getState, action)) {
+	          return next(action);
+	        }
+	
+	        var logEntry = {};
+	        logBuffer.push(logEntry);
+	
+	        logEntry.started = timer.now();
+	        logEntry.startedTime = new Date();
+	        logEntry.prevState = stateTransformer(getState());
+	        logEntry.action = action;
+	
+	        var returnedValue = undefined;
+	        if (logErrors) {
+	          try {
+	            returnedValue = next(action);
+	          } catch (e) {
+	            logEntry.error = errorTransformer(e);
+	          }
+	        } else {
+	          returnedValue = next(action);
+	        }
+	
+	        logEntry.took = timer.now() - logEntry.started;
+	        logEntry.nextState = stateTransformer(getState());
+	
+	        printBuffer();
+	
+	        if (logEntry.error) throw logEntry.error;
+	        return returnedValue;
+	      };
+	    };
+	  };
+	}
+	
+	module.exports = createLogger;
+
+/***/ },
+/* 879 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	exports.__esModule = true;
+	function createThunkMiddleware(extraArgument) {
+	  return function (_ref) {
+	    var dispatch = _ref.dispatch;
+	    var getState = _ref.getState;
+	    return function (next) {
+	      return function (action) {
+	        if (typeof action === 'function') {
+	          return action(dispatch, getState, extraArgument);
+	        }
+	
+	        return next(action);
+	      };
+	    };
+	  };
+	}
+	
+	var thunk = createThunkMiddleware();
+	thunk.withExtraArgument = createThunkMiddleware;
+	
+	exports['default'] = thunk;
+
+/***/ },
+/* 880 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactRedux = __webpack_require__(853);
+	
+	var _Task = __webpack_require__(881);
+	
+	var _Task2 = _interopRequireDefault(_Task);
+	
+	var _moment = __webpack_require__(338);
+	
+	var _moment2 = _interopRequireDefault(_moment);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var OverdueTasks = function OverdueTasks(_ref) {
+	  var overdueTasks = _ref.overdueTasks;
+	  return _react2.default.createElement(
+	    'ul',
+	    null,
+	    overdueTasks.map(function (overdueTask) {
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'col-xs-3', key: overdueTask.id },
+	        _react2.default.createElement(_Task2.default, {
+	          id: overdueTask.id,
+	          name: overdueTask.name,
+	          due: (0, _moment2.default)().endOf(overdueTask.dueBy).fromNow(),
+	          color: 0,
+	          key: overdueTask.id
+	        })
+	      );
+	    })
+	  );
+	};
+	
+	OverdueTasks.propTypes = {
+	  overdueTasks: _react.PropTypes.arrayOf(_react.PropTypes.shape({
+	    name: _react.PropTypes.string.isRequired,
+	    due: _react.PropTypes.string.isRequired
+	  }).isRequired).isRequired
+	};
+	
+	var mapStateToProps = function mapStateToProps(state) {
+	  return {
+	    overdueTasks: state.tasks.overdueTasks
+	  };
+	};
+	
+	OverdueTasks = (0, _reactRedux.connect)(mapStateToProps)(OverdueTasks);
+	
+	exports.default = OverdueTasks;
+
+/***/ },
+/* 881 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _Paper = __webpack_require__(482);
+	
+	var _Paper2 = _interopRequireDefault(_Paper);
+	
+	var _socketio = __webpack_require__(787);
+	
+	var _socketio2 = _interopRequireDefault(_socketio);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var style = {
+	  height: 50,
+	  width: 50,
+	  margin: 10,
+	  textAlign: 'center',
+	  display: 'inline-block',
+	  overflow: 'hidden'
+	};
+	
+	var Task = function (_React$Component) {
+	  _inherits(Task, _React$Component);
+	
+	  function Task(props) {
+	    _classCallCheck(this, Task);
+	
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Task).call(this, props));
+	
+	    _this.state = {
+	      id: _this.props.id,
+	      name: _this.props.name,
+	      due: _this.props.due,
+	      color: _this.props.color
+	    };
+	    return _this;
+	  }
+	
+	  _createClass(Task, [{
+	    key: 'completeTask',
+	    value: function completeTask() {
+	      _socketio2.default.emit('complete task', this.state.id);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	
+	      var style2 = Object.assign({}, style);
+	      if (this.state.color === 0) {
+	        style2.border = '2px solid red';
+	      } else if (this.state.color === 1) {
+	        style2.border = '2px solid yellow';
+	      } else {
+	        style2.border = '2px solid green';
+	      }
+	
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	          _Paper2.default,
+	          {
+	            style: style2,
+	            zDepth: 3,
+	            circle: true,
+	            onTouchTap: this.completeTask.bind(this)
+	          },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'innerTaskText' },
+	            this.state.name
+	          )
+	        )
+	      );
+	    }
+	  }]);
+	
+	  return Task;
+	}(_react2.default.Component);
+	
+	exports.default = Task;
+
+/***/ },
+/* 882 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+	
+	var task = function task(state, action) {
+	  switch (action.type) {
+	
+	    case 'ADD_TASK':
+	      return {
+	        id: action.id,
+	        name: action.name,
+	        // completed: false,  //do we need this?
+	        dueBy: action.dueBy,
+	        interval: action.interval
+	        //state:  recent, urgent, overdue??
+	      };
+	    case 'COMPLETE_TASK':
+	      if (state.id !== action.id) {
+	        return state;
+	      }
+	
+	      return Object.assign({}, state, {
+	        //dueBy: dateNow + interval
+	      });
+	    default:
+	      return state;
+	  }
+	};
+	
+	var tasks = function tasks() {
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? {
+	    //initial state
+	    overdueTasks: [],
+	    urgentTasks: [],
+	    recentTasks: [],
+	    now: Date.now()
+	  } : arguments[0];
+	  var action = arguments[1];
+	
+	  switch (action.type) {
+	
+	    case 'ADD_TASK':
+	      return [].concat(_toConsumableArray(state), [task(undefined, action)]);
+	    case 'COMPLETE_TASK':
+	      return state.map(function (t) {
+	        return task(t, action);
+	      });
+	    case 'ADD_ALL_TASKS':
+	      return {
+	        overdueTasks: action.overdueTasks,
+	        urgentTasks: action.urgentTasks,
+	        recentTasks: action.recentTasks
+	      };
+	    default:
+	      return state;
+	  }
+	};
+	
+	exports.default = tasks;
+
+/***/ },
+/* 883 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactRedux = __webpack_require__(853);
+	
+	var _Task = __webpack_require__(881);
+	
+	var _Task2 = _interopRequireDefault(_Task);
+	
+	var _moment = __webpack_require__(338);
+	
+	var _moment2 = _interopRequireDefault(_moment);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var UrgentTasks = function UrgentTasks(_ref) {
+	  var urgentTasks = _ref.urgentTasks;
+	  return _react2.default.createElement(
+	    'ul',
+	    null,
+	    urgentTasks.map(function (urgentTask) {
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'col-xs-3', key: urgentTask.id },
+	        _react2.default.createElement(_Task2.default, {
+	          id: urgentTask.id,
+	          name: urgentTask.name,
+	          due: (0, _moment2.default)().endOf(urgentTask.dueBy).fromNow(),
+	          color: 1
+	        })
+	      );
+	    })
+	  );
+	};
+	
+	UrgentTasks.propTypes = {
+	  urgentTasks: _react.PropTypes.arrayOf(_react.PropTypes.shape({
+	    name: _react.PropTypes.string.isRequired,
+	    due: _react.PropTypes.string.isRequired
+	  }).isRequired).isRequired
+	};
+	
+	var mapStateToProps = function mapStateToProps(state) {
+	  return {
+	    urgentTasks: state.tasks.urgentTasks
+	  };
+	};
+	
+	UrgentTasks = (0, _reactRedux.connect)(mapStateToProps)(UrgentTasks);
+	
+	exports.default = UrgentTasks;
+
+/***/ },
+/* 884 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactRedux = __webpack_require__(853);
+	
+	var _Task = __webpack_require__(881);
+	
+	var _Task2 = _interopRequireDefault(_Task);
+	
+	var _moment = __webpack_require__(338);
+	
+	var _moment2 = _interopRequireDefault(_moment);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var RecentTasks = function RecentTasks(_ref) {
+	  var recentTasks = _ref.recentTasks;
+	  return _react2.default.createElement(
+	    'ul',
+	    null,
+	    recentTasks.map(function (recentTask) {
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'col-xs-3', key: recentTask.id },
+	        _react2.default.createElement(_Task2.default, {
+	          id: recentTask.id,
+	          name: recentTask.name,
+	          due: (0, _moment2.default)().endOf(recentTask.dueBy).from(undefined.state.now),
+	          overdue: 2
+	        })
+	      );
+	    })
+	  );
+	};
+	
+	RecentTasks.propTypes = {
+	  recentTasks: _react.PropTypes.arrayOf(_react.PropTypes.shape({
+	    name: _react.PropTypes.string.isRequired,
+	    due: _react.PropTypes.string.isRequired
+	  }).isRequired).isRequired
+	};
+	
+	var mapStateToProps = function mapStateToProps(state) {
+	  return {
+	    recentTasks: state.tasks.recentTasks
+	  };
+	};
+	
+	RecentTasks = (0, _reactRedux.connect)(mapStateToProps)(RecentTasks);
+	
+	exports.default = RecentTasks;
 
 /***/ }
 /******/ ]);

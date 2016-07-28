@@ -1,6 +1,6 @@
 import React from 'react';
 import Paper from 'material-ui/Paper';
-import socket from './socketio.js';
+import socket from '../socketio.js';
 
 
 let style = {
@@ -21,8 +21,7 @@ class Task extends React.Component {
       name: this.props.name,
       due: this.props.due,
       color: this.props.color
-    }
-
+    };
   }
 
   completeTask () {
