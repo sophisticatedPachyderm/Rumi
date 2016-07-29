@@ -7,6 +7,8 @@ import MenuItem from 'material-ui/MenuItem';
 import { connect } from 'react-redux';
 import { addTaskToServer } from './actions/taskActions';
 
+import annyang from 'annyang';
+
 class AddTask extends React.Component {
   constructor(props) {
     super(props);
@@ -19,7 +21,33 @@ class AddTask extends React.Component {
       taskInterval: 0
     };
 
-    console.log('AddTask props:', props);
+    if (annyang) {
+      console.log('Annyang here...');
+      const commands = {
+        '(add) (new) task': () => {
+          this.open();
+          console.log('prompt for task name');
+        },
+        'task name (of) *name': (name) => {
+          this.setState({taskName: name});
+        },
+        'task occurs (every) :period *length': (period, length) => {
+          this.setState({taskInterval: period});
+          if (length === 'hour') {
+            this.setState({intervalVal: 1});
+          } else {
+            this.setState({intervalVal: 2});
+          }
+        },
+        'add': ()=> {
+          this.handleSubmit();
+        }
+      }
+
+      annyang.addCommands(commands);
+      annyang.start();
+    }
+
   }
 
   close() {
@@ -51,7 +79,6 @@ class AddTask extends React.Component {
     let days = n => hours(n) * 24;
 
     let n = this.state.intervalNum;
-    console.log('calcDueDateAndInterval:', n);
     // 1 = hours; 2 = days
     if (this.state.intervalVal === 1) {
       this.state.taskInterval = hours(n);
@@ -63,7 +90,9 @@ class AddTask extends React.Component {
   }
 
   handleSubmit(e) {
-    e.preventDefault();
+    if (e) {
+      e.preventDefault();
+    }
     this.calcDueDateAndInterval();
 
     let taskName = this.state.taskName;
@@ -93,7 +122,7 @@ class AddTask extends React.Component {
           <Modal.Title>Add Task</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <TextField name="taskName" hintText="Enter a new task!" onChange={this.handleTextFieldChange.bind(this)}/>
+          <TextField name="taskName" hintText={this.state.taskName || 'enter a new task here'} onChange={this.handleTextFieldChange.bind(this)}/>
           <TextField type="number" name="intervalNum" defaultValue="1" onChange={this.handleTextFieldChange.bind(this)}  floatingLabelText="Recurs every:" floatingLabelFixed={true} />
           <SelectField value={this.state.intervalVal} onChange={this.handleSelectFieldChange.bind(this)}>
             <MenuItem value={1} primaryText="hour(s)" />
