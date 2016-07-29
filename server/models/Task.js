@@ -24,6 +24,10 @@ var Task = db.define('task', {
     type: Sequelize.BOOLEAN,
     allowNull: true
   },
+  claimedBy: {
+    type: Sequelize.INTEGER,
+    allowNull: true,
+  },
 }, {
   instanceMethods: {
     complete: function(userId) {
