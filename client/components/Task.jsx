@@ -10,15 +10,15 @@ import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
 import Popover from 'material-ui/Popover';
 import RaisedButton from 'material-ui/RaisedButton';
-
-const style = {
-  height: 50,
-  width: 50,
-  margin: 10,
-  textAlign: 'center',
-  display: 'inline-block',
-  overflow: 'hidden'
-};
+//
+// const style = {
+//   height: 50,
+//   width: 50,
+//   margin: 10,
+//   textAlign: 'center',
+//   display: 'inline-block',
+//   overflow: 'hidden'
+// };
 
 const colors = {
   recent: '#5ED848',
@@ -41,7 +41,7 @@ class Task extends React.Component {
   }
 
   componentDidMount() {
-    
+
   }
 
   // helpers for the model
@@ -96,7 +96,7 @@ class Task extends React.Component {
     let a = dueMills - Date.now();
     let percentage = a / this.props.interval;
     let displayPercentage = percentage <= 0 ? 1 : 1 - percentage;
-    
+
     let color = colors[this.props.status];
     let lastCompletedBy;
     if (this.props.lastCompletedBy) {
@@ -106,17 +106,17 @@ class Task extends React.Component {
       <div>
         <div className="outerTaskBox" onTouchTap={this.handleTouchTap.bind(this)}>
           <CircularProgress
+            className="circle"
             color={color}
             mode={'determinate'}
             value={displayPercentage * 100}
-            size={2}
-            innerStyle="circleProgress" />
+            size={2} />
 
           <div className="innerTaskText">
-            {this.props.name}
+            <span className="task_name">{this.props.name}</span>
+            <TimeRemaining preciseDueBy={this.props.preciseDueBy}/>
+            <span className="task_lcb">{lastCompletedBy}</span>
           </div>
-          <TimeRemaining preciseDueBy={this.props.preciseDueBy}/>
-          <p>{lastCompletedBy}</p>
         </div>
         <div>
         <Popover
