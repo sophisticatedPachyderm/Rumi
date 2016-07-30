@@ -17,6 +17,7 @@ let OverdueTasks = ({overdueTasks}) => (
             interval={overdueTask.interval}
             dueBy={moment().endOf(overdueTask.dueBy).fromNow()}
             key={overdueTask.id}
+            preciseDueBy={overdueTask.dueBy}
             status="overdue"
           />
         </div>

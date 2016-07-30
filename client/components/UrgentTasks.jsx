@@ -17,6 +17,7 @@ let UrgentTasks = ({urgentTasks}) => (
             interval={urgentTask.interval}
             dueBy={moment().endOf(urgentTask.dueBy).fromNow()}
             key={urgentTask.id}
+            preciseDueBy={urgentTask.dueBy}
             status="urgent"
           />
         </div>
