@@ -112,11 +112,9 @@ class AddTask extends React.Component {
   }
 
   render() {
-    return(
-      <div onClick={this.open.bind(this)}>
-        <Button className="add_task_button">
-          <img src="add.png" alt="plus"></img>
-        </Button>
+    return (
+      <div className="add_task_wrapper" onClick={this.open.bind(this)}>
+        <span className="add_task_button">+</span>
         <Modal bsSize="small" show={this.state.showModal} onHide={this.close.bind(this)}>
         <Modal.Header closeButton>
           <Modal.Title>Add Task</Modal.Title>

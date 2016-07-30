@@ -42,9 +42,11 @@ var App = (props) => (
   <MuiThemeProvider className="container">
     <div>
       <Navbar />
-      <MagnifyingGlass />
-      <div className="row" style={style}>
+      <div className="tasks_tools">
+        <MagnifyingGlass />
         <AddTask/>
+      </div>
+      <div className="row" style={style}>
         <div className="tasks_container">
           <Tasks />
         </div>
