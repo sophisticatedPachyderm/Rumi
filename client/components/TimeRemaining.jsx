@@ -25,10 +25,10 @@ export class TimeRemaining extends Component {
   }
 
   render() {
-    let minutesRemaining = this.state.minutesRemaining;
+    let minutesRemaining = (this.state.minutesRemaining > 0) ? `${this.state.minutesRemaining} minutes remaining.` : `This task is overdue.`;
     return (
     <div className="timeRemaining">
-      <span>{minutesRemaining + ` minutes remaining!`}</span>
+      <span>{minutesRemaining}</span>
     </div>
     );
   }
