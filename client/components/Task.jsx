@@ -101,6 +101,8 @@ class Task extends React.Component {
     let lastCompletedBy;
     if (this.props.lastCompletedBy) {
       lastCompletedBy = 'Last Completed By: ' + this.props.lastCompletedBy;
+    } else {
+      lastCompletedBy = 'Not Completed Yet'
     }
     return (
       <div>
@@ -115,7 +117,8 @@ class Task extends React.Component {
           <div className="innerTaskText">
             <span className="task_name">{this.props.name}</span>
             <TimeRemaining preciseDueBy={this.props.preciseDueBy}/>
-            <span className="task_lcb">{lastCompletedBy}</span>
+            <span className="task_lcb">{lastCompletedBy}</span> <br />
+            <span className="task_lcb">claimed by: {this.props.claimedBy || 'no one yet'}</span>
           </div>
         </div>
         <div>

@@ -18,14 +18,15 @@
   padding: 24px;
   margin: 12px 120px;
   background-color:#00BCD6;
-  box-shadow: 0px 1px 2px #333;
+  box-shadow: 0px 2px 3px #111;
   color: #fff;
   transition: 0.25s all ease-in-out;
 }
 
 .outerTaskBox:hover {
-  box-shadow: 0px 3px 3px #333;
-  margin: 12px 0;
+  width: 960px;
+  box-shadow: none;
+  background-color: #008496;
 }
 
 .circle, .innerTaskText {
@@ -157,13 +158,14 @@
 }
 .task_tools {
   margin-left: auto;
+  transition: 0.25s all ease;
 }
 
 .add_task_wrapper {
   width: 300px;
-  positon: relative;
-  left: -100px;
+  position: relative;
   margin: auto;
+  margin-bottom: -100px;
 }
 
 .add_task_button {
