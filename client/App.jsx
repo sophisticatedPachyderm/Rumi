@@ -44,10 +44,8 @@ var App = (props) => (
       <Navbar />
       <MagnifyingGlass />
       <div className="row" style={style}>
-        <div className="col-xs-2 col-xs-offset-5">
-          <AddTask/>
-        </div>
-        <div className="col-xs-12">
+        <AddTask/>
+        <div className="tasks_container">
           <Tasks />
         </div>
       </div>

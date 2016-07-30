@@ -5,10 +5,9 @@ import moment from 'moment';
 import { urgency, searchFilter } from '../filterTasksHelpers';
 
 let RecentTasks = ({recentTasks}) => (
-  <ul>
+  <div className="tasks_inner_container">
     {recentTasks.map(recentTask => {
       return (
-        <div className="col-xs-3" key={recentTask.id}>
           <Task
             id={recentTask.id}
             name={recentTask.name}
@@ -21,10 +20,9 @@ let RecentTasks = ({recentTasks}) => (
             status={recentTask.status}
             lastCompletedBy={recentTask.lastCompletedBy}
           />
-        </div>
       );
     })}
-  </ul>
+  </div>
 );
 
 RecentTasks.propTypes = {
@@ -53,7 +51,7 @@ const mapStateToProps = function(state) {
         t: t,
         name: item.name,
         user: item.user
-      }; 
+      };
     }
   });
 

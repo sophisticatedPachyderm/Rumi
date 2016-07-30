@@ -3,18 +3,7 @@
 }
 
 .innerTaskText {
-  height: 50px;
-  width: 50px;
-  position: absolute;
-  /* font-size: 1.5em; */
-  text-align: center;
-  /* margin-left: auto; */
-  z-index: 1;
-  left: 50px;
-  top: 36px;
-  display: flex;
-  align-items: center;
-  /* align-content: center; */
+  margin-left: 24px;
 }
 .circleProgress {
   position: absolute;
@@ -24,11 +13,16 @@
   top: 34px;
 }
 .outerTaskBox {
-  width: 120px;
-  height: 120px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 720px;
+  display: inline-block;
+  padding: 24px;
+  margin: 12px auto;
+  background-color: #607D8B;
+  color: #fff;
+}
+
+.circle, .innerTaskText {
+  display:inline-block;
 }
 
 .modal {
@@ -120,4 +114,46 @@
 .magInnerStretch {
   width: 272px;
   left: -96px;
+}
+
+.tasks_container {
+  width: 960px;
+  margin: 0 auto;
+  display: flex;
+}
+
+.tasks_inner_container {
+}
+
+.col-xs-3 {
+  margin: 48px;
+}
+
+.task_name {
+  width: 360px;
+  font-size: 32px;
+  line-height: 40px;
+  font-weight: bold;
+}
+
+.task_lcb {
+  width: 360px;
+}
+
+.add_task_button {
+  margin: 0;
+  border: none;
+  position: absolute;
+  top: -120px;
+  left: 240px;
+  transition: 0.25s all ease;
+}
+
+.add_task_button > img {
+  margin: 0;
+}
+
+.add_task_button:hover {
+  background-color: #fff;
+  opacity: 0.6;
 }

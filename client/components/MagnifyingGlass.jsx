@@ -10,6 +10,9 @@ const inputStyle = {
   top: '16px',
   fontSize: '1.5em',
   width: '184px',
+  outline: 'none',
+  highlight:'none',
+  border: 'none',
 };
 
 const closeBtnStyle = {
@@ -32,7 +35,7 @@ class MagnifyingGlass extends React.Component {
     this.state = {
       inputOn: false,
     };
-  } 
+  }
 
   clickHandler() {
     console.log('clicked');
@@ -54,7 +57,7 @@ class MagnifyingGlass extends React.Component {
   closeSearch() {
     this.props.dispatch(searchClose());
   }
-  
+
   render() {
     var input;
     if (this.state.inputOn) {
@@ -71,7 +74,7 @@ class MagnifyingGlass extends React.Component {
       input = null;
       classNameEnd = 'Closed';
       this.state.inputOn = false;
-    } 
+    }
     return (
     <div className="magnifyingGlass" onClick={this.clickHandler.bind(this)}>
       <div className={ classNames.outer + classNameEnd } />
@@ -79,7 +82,7 @@ class MagnifyingGlass extends React.Component {
       <div className={ classNames.handle + classNameEnd }/>
       {input}
     </div>);
-  } 
+  }
 }
 
 

@@ -22,11 +22,9 @@ class AddTask extends React.Component {
     };
 
     if (annyang) {
-      console.log('Annyang here...');
       const commands = {
         '(add) (new) task': () => {
           this.open();
-          console.log('prompt for task name');
         },
         'task name (of) *name': (name) => {
           this.setState({taskName: name});
@@ -116,13 +114,15 @@ class AddTask extends React.Component {
   render() {
     return(
       <div onClick={this.open.bind(this)}>
-        <img className="addTask" src="http://bit.ly/29UZrXq"/>
+        <Button className="add_task_button">
+          <img src="add.png" alt="plus"></img>
+        </Button>
         <Modal bsSize="small" show={this.state.showModal} onHide={this.close.bind(this)}>
         <Modal.Header closeButton>
           <Modal.Title>Add Task</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <TextField name="taskName" hintText={this.state.taskName || 'enter a new task here'} onChange={this.handleTextFieldChange.bind(this)}/>
+          <TextField name="taskName" hintText={this.state.taskName || 'task name...'} onChange={this.handleTextFieldChange.bind(this)}/>
           <TextField type="number" name="intervalNum" defaultValue="1" onChange={this.handleTextFieldChange.bind(this)}  floatingLabelText="Recurs every:" floatingLabelFixed={true} />
           <SelectField value={this.state.intervalVal} onChange={this.handleSelectFieldChange.bind(this)}>
             <MenuItem value={1} primaryText="hour(s)" />
