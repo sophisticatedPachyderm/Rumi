@@ -2,9 +2,10 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Task from './Task.jsx';
 import moment from 'moment';
-import urgency from '../urgency.service';
+import { urgency, searchFilter } from '../filterTasksHelpers';
 
 let RecentTasks = ({recentTasks}) => (
+
   <ul>
     {recentTasks.map(recentTask => {
       return (
@@ -31,9 +32,14 @@ RecentTasks.propTypes = {
 };
 
 const mapStateToProps = function(state) {
+  var tasks = state.tasks;
+  if (!state.search.closed && state.search.string !== '') {  //search is open so filter
+    tasks = searchFilter(tasks, state.search.string);
+  }
   return {
-    recentTasks: urgency(state.tasks, 'recent'),
+    recentTasks: urgency(tasks, 'recent'),
     completedList: state.completedList,
+    search: state.search
   };
 };
 
