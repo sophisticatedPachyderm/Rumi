@@ -123,11 +123,20 @@
   left: -96px;
 }
 
+.tasks_row_container {
+  margin: auto;
+  width: 300px;
+  left: -284px;
+  position: relative;
+  top: 48px;
+}
+
 .tasks_container {
   width: 960px;
   margin: 0 auto;
   display: flex;
 }
+
 
 .tasks_inner_container {
 }
@@ -147,13 +156,23 @@
   width: 360px;
 }
 
+.add_task_wrapper {
+  width: 300px;
+  positon: relative;
+  left: -100px;
+  margin: auto;
+}
+
 .add_task_button {
   margin: 0;
   border: none;
-  position: absolute;
-  top: -120px;
-  left: 240px;
+  position: relative;
+  top: 18px;
+  left: -38px;
   transition: 0.25s all ease;
+  font-size: 3.5em;
+  color: #FA0;
+  cursor: pointer;
 }
 
 .add_task_button > img {
